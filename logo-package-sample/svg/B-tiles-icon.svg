@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" width="260" height="260">
+  <title>Solvane (fictional brand) - icon B-tiles</title>
+  <g id="mark">
+    <path d="M 10 130 A 120 120 0 0 1 130 10 L 130 130 Z" fill="#FF7A2F"/>
+    <rect x="130" y="10" width="120" height="120" rx="9.6" fill="#FFC94A"/>
+    <rect x="10" y="130" width="120" height="120" rx="9.6" fill="#14A38B"/>
+    <path d="M 130 130 L 250 130 A 120 120 0 0 1 130 250 Z" fill="#1F2430"/>
+  </g>
+</svg>

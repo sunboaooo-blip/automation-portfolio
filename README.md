@@ -12,6 +12,7 @@ This portfolio keeps growing. New tools are added as they are built and tested. 
 | [txt-to-xlsx](txt-to-xlsx/) | Text data file → clean XLSX: whole-row dedup, every blank filled with one placeholder, no empty cells, a step log. | Python + openpyxl |
 | [pdf-sheet-picker](pdf-sheet-picker/) | Selects drawing sheets by discipline (e.g. electrical E/T) from a construction set by reading the title block, rotated pages included. | Python + PyMuPDF (pypdf fallback) |
 | [pdf-image-extractor](pdf-image-extractor/) | Extracts every embedded image at native resolution, de-duplicates by pixels, and writes a CSV manifest with page / row / position. | Python + PyMuPDF |
+| [logo-package-sample](logo-package-sample/) | Minimalist geometric logo package for a fictional brand: editable SVG (live text + outlined), icons, PNG/JPG exports, PDF style guide. | Python + CairoSVG + HarfBuzz + fontTools |
 | [transcription](transcription/) | Audio/video → TXT / SRT / VTT with local Whisper on GPU, plus a punctuation pass that is guaranteed not to change any word. | Python, CUDA GPU |
 
 ## Run the tests

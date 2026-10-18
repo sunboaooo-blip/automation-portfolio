@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400">
+  <title>Solvane (fictional brand) - concept A-sun</title>
+  <defs><clipPath id="disc"><circle cx="200" cy="200.0" r="120"/></clipPath></defs>
+  <g id="mark" clip-path="url(#disc)">
+    <circle cx="200" cy="200.0" r="120" fill="#FFC94A"/>
+    <path d="M 125.6 206.0 A 74.4 74.4 0 0 1 274.4 206.0 Z" fill="#FF7A2F"/>
+    <path d="M 80 233.6 q 60.0 -26.4 120 0 t 120 0" fill="none" stroke="#14A38B" stroke-width="26.4" stroke-linecap="round"/>
+    <path d="M 101.60000000000001 274.4 q 49.199999999999996 -21.12 98.39999999999999 0 t 98.39999999999999 0" fill="none" stroke="#1F2430" stroke-width="21.12" stroke-linecap="round"/>
+  </g>
+  <text x="370" y="240.0" font-family="Manrope" font-weight="700" font-size="112" letter-spacing="-1.5" fill="#1F2430">solvane</text>
+  <text x="374" y="292.0" font-family="Manrope" font-weight="500" font-size="26" letter-spacing="4" fill="#14A38B">LIGHT · LOCAL · CLEAN</text>
+</svg>

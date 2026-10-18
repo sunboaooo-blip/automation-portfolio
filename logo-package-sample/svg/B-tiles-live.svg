@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400">
+  <title>Solvane (fictional brand) - concept B-tiles</title>
+  <g id="mark">
+    <path d="M 80 200.0 A 120 120 0 0 1 200 80.0 L 200 200.0 Z" fill="#FF7A2F"/>
+    <rect x="200" y="80.0" width="120" height="120" rx="9.6" fill="#FFC94A"/>
+    <rect x="80" y="200.0" width="120" height="120" rx="9.6" fill="#14A38B"/>
+    <path d="M 200 200.0 L 320 200.0 A 120 120 0 0 1 200 320.0 Z" fill="#1F2430"/>
+  </g>
+  <text x="370" y="240.0" font-family="Manrope" font-weight="700" font-size="112" letter-spacing="-1.5" fill="#1F2430">solvane</text>
+  <text x="374" y="292.0" font-family="Manrope" font-weight="500" font-size="26" letter-spacing="4" fill="#14A38B">LIGHT · LOCAL · CLEAN</text>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" width="260" height="260">
+  <title>Solvane (fictional brand) - icon A-sun</title>
+  <defs><clipPath id="disc"><circle cx="130" cy="130" r="120"/></clipPath></defs>
+  <g id="mark" clip-path="url(#disc)">
+    <circle cx="130" cy="130" r="120" fill="#FFC94A"/>
+    <path d="M 55.599999999999994 136.0 A 74.4 74.4 0 0 1 204.4 136.0 Z" fill="#FF7A2F"/>
+    <path d="M 10 163.6 q 60.0 -26.4 120 0 t 120 0" fill="none" stroke="#14A38B" stroke-width="26.4" stroke-linecap="round"/>
+    <path d="M 31.60000000000001 204.4 q 49.199999999999996 -21.12 98.39999999999999 0 t 98.39999999999999 0" fill="none" stroke="#1F2430" stroke-width="21.12" stroke-linecap="round"/>
+  </g>
+</svg>
