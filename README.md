@@ -15,6 +15,10 @@ This portfolio keeps growing. New tools are added as they are built and tested. 
 | [logo-package-sample](logo-package-sample/) | Minimalist geometric logo package for a fictional brand: editable SVG (live text + outlined), icons, PNG/JPG exports, PDF style guide. | Python + CairoSVG + HarfBuzz + fontTools |
 | [transcription](transcription/) | Audio/video → TXT / SRT / VTT with local Whisper on GPU, plus a punctuation pass that is guaranteed not to change any word. | Python, CUDA GPU |
 
+## Case studies (real client work, privacy stripped)
+
+- [AI-assisted character image edits](case-studies/ai-character-image-edits.md): the Gemini image-editing pipeline with sampling, masked repairs, a two-gate QA process and a 14-class defect register built from real client feedback.
+
 ## Run the tests
 
 ```sh
