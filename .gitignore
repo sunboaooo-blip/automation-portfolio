@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+out*/
+*.xlsx
+pdf-image-extractor/*.pdf
+pdf-sheet-picker/fixtures/heavy*.pdf

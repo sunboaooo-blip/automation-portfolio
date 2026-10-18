@@ -1,0 +1,5 @@
+{"encoding": "utf-8", "delimiter": ",", "required_columns": ["id", "email", "date", "amount"],
+ "required_fields": ["id", "email"], "unique_keys": [["id"]],
+ "formats": {"email": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", "date": "^\\d{4}-\\d{2}-\\d{2}$", "amount": "^-?\\d+(\\.\\d{1,2})?$"},
+ "allowed_chars": {"id": "^[A-Za-z0-9-]*$"},
+ "forbid_embedded_newlines": true, "forbid_control_chars": true, "trim_check": true}

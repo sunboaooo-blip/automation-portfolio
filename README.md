@@ -1,0 +1,32 @@
+# Automation portfolio
+
+Small, tested tools for everyday file and data jobs: validating CSVs, cleaning text exports into Excel, pulling sheets or images out of PDFs, and transcribing audio.
+Each tool is a single readable script with synthetic test data and a written list of what it does **not** do.
+The tools are built with Claude.
+
+This portfolio keeps growing. New tools are added as they are built and tested. Everything here uses synthetic or public-domain data only; no client files are ever published.
+
+| Tool | What it does | Runs on |
+|---|---|---|
+| [csv-validate](csv-validate/) | Checks CSV files against editable rules and reports every issue with file / record / line / field. CI-friendly exit codes. | Python 3.8+, standard library only (tested on Ubuntu 22.04's Python 3.10.12) |
+| [txt-to-xlsx](txt-to-xlsx/) | Text data file → clean XLSX: whole-row dedup, every blank filled with one placeholder, no empty cells, a step log. | Python + openpyxl |
+| [pdf-sheet-picker](pdf-sheet-picker/) | Selects drawing sheets by discipline (e.g. electrical E/T) from a construction set by reading the title block, rotated pages included. | Python + PyMuPDF (pypdf fallback) |
+| [pdf-image-extractor](pdf-image-extractor/) | Extracts every embedded image at native resolution, de-duplicates by pixels, and writes a CSV manifest with page / row / position. | Python + PyMuPDF |
+| [transcription](transcription/) | Audio/video → TXT / SRT / VTT with local Whisper on GPU, plus a punctuation pass that is guaranteed not to change any word. | Python, CUDA GPU |
+
+## Run the tests
+
+```sh
+./run_tests.sh          # creates a local venv, runs every tool on its fixtures, checks results and exit codes
+```
+
+The transcription tests need a GPU and model weights, so they are documented in that folder rather than run here.
+
+## Principles used throughout
+
+- **Never modify inputs.** Every tool refuses to write over its input, including symlinks and hard links.
+- **Don't guess silently.** Ambiguous cases are reported for review instead of being decided quietly.
+- **Self-check the output.** Tools re-read what they wrote (for example, empty cells = 0 and duplicate rows = 0) and report the result.
+- **Honest limits.** Each README lists what was not tested.
+
+License: MIT.

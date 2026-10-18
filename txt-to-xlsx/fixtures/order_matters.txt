@@ -1,0 +1,12 @@
+id;name;zip;amount;city
+001;Alice;01234;10.5;Tokyo
+002;Bob;;7;
+001;Alice;01234;10.5;Tokyo
+003; ;98765;NULL;Osaka
+
+004;Dan;11111
+002;Bob;;7;
+005;Eve;22222;3;Kyoto
+006;Bob;;7;
+007;Zed;;5;Nara
+007;Zed;N/A;5;Nara

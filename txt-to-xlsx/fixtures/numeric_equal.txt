@@ -1,0 +1,4 @@
+name,amount
+Bob,1
+Bob,1.0
+Ann,=1+1
