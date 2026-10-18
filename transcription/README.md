@@ -11,7 +11,7 @@ Audio or video → TXT / SRT / VTT with OpenAI's Whisper models running locally 
    - On long recordings every Whisper variant tested drifts into all-lowercase text without punctuation, and prompting causes repetition. This pass sends ~120-word chunks to a local LLM (any OpenAI-compatible endpoint, run with thinking disabled).
    - A chunk is accepted only if its words are identical to the input. Otherwise the punctuation and casing are transferred onto the original words by sequence alignment.
    - Result: the word sequence is provably unchanged (WER is identical before and after).
-3. Read-through by a person before delivery. A few stray capitals can remain.
+3. A read-through before delivery is still recommended: a few stray capitals can remain. This step is a recommendation, not something the scripts do.
 
 ## Measured (public test data only)
 

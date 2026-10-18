@@ -32,7 +32,16 @@ Exit: `0` = exported with nothing to review, `1` = review needed or nothing matc
 | `rotated.pdf`: 4 sheets stored at /Rotate 0/90/180/270 that render identical to upright sheets | E2.01, E2.02, T2.01 exported, A3.01 skipped, exit 0 | 4 held (Form XObject content), exit 1 |
 | `make_heavy.py` (29 MB, 40 sheets × 20k vectors + 2k labels) | 14/14 in 2.7 s | 14/14 in 12.4 s |
 
-The pypdf results were also reproduced independently on Windows (Python 3.12, pypdf 6.10). On one real 74-page, 88 MB project set, the pypdf fallback finished in about 104 s and correctly held 56 pages it could not read reliably. That run is why PyMuPDF is the recommended engine.
+The pypdf results were also reproduced independently on Windows (Python 3.12, pypdf 6.10).
+
+**Real project set** (74 pages, 88 MB, client sample, not published):
+
+| Engine | Time | Result |
+|---|---|---|
+| PyMuPDF 1.28.2 | 2.9 s | Sheet numbers found on 66 pages (G, SD, L, IR, S, A, M, P, E series). The 12 electrical sheets (E001–E701 incl. ES101/ES102) were exported in original order, and each exported page is text-identical to its source page. 8 civil pages numbered only "SHEET n OF 15" (no discipline letter) were held for review. Input unchanged. |
+| pypdf fallback | ~104 s | Held 56 pages it could not read reliably. |
+
+This is why PyMuPDF is the recommended engine.
 
 ## Not covered
 

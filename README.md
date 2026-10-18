@@ -24,7 +24,7 @@ The transcription tests need a GPU and model weights, so they are documented in 
 
 ## Principles used throughout
 
-- **Never modify inputs.** Every tool refuses to write over its input, including symlinks and hard links.
+- **Never modify inputs.** Inputs are only read. csv-validate and txt-to-xlsx additionally refuse an output path that points at an input (including symlinks and hard links); pdf-sheet-picker refuses to write its PDF over the source. The other tools write only into a separate output folder.
 - **Don't guess silently.** Ambiguous cases are reported for review instead of being decided quietly.
 - **Self-check the output.** Tools re-read what they wrote (for example, empty cells = 0 and duplicate rows = 0) and report the result.
 - **Honest limits.** Each README lists what was not tested.
