@@ -1,6 +1,6 @@
 # Case study: AI-assisted character image edits for a production client
 
-*Real paid work. Client, task IDs, images and names are withheld; this page describes only the process and what we learned.*
+*Real commissioned client work; payment status is not claimed here. Client, task IDs, images and names are withheld. This page describes only the process and what we learned.*
 
 ## The job
 
@@ -13,10 +13,10 @@ A client sends 3D-rendered character art, one character per task, with a written
 3. **Sample, don't settle.** Three candidates are generated per file, and the best is selected at native resolution against the source and the PM reference. A single "good enough" draw is not accepted.
 4. **Local, deterministic repairs.** Small fixes (eyebrow outlines, a contact edge, line clean-up) are made with masked, scripted edits rather than a full regeneration, so pixels that must not change stay byte-identical.
 5. **Two separate review gates.**
-   - *Semantic gate:* a person-style visual review at 1024 px beside the source and the PM reference, then zoomed checks of the face, hand/prop contact and edit boundaries.
+   - *Semantic gate:* a visual review by the AI producer at 1024 px beside the source and the PM reference, then zoomed checks of the face, hand/prop contact and edit boundaries. This is not a human professional review.
    - *Technical gate:* protected-region masks, hashes, file count/size and the packaging check.
    - Passing the technical gate never implies passing the semantic one.
-6. **Independent second review** by a separate agent before anything is delivered. A producer's "pass" is evidence, not the decision.
+6. **Independent second review** by a separate AI agent before anything is delivered. A producer's "pass" is evidence, not the decision.
 
 ## What went wrong, and what changed
 
@@ -40,7 +40,7 @@ Several deliveries passed our internal checks but were still sent back by the cl
 
 ## Results we can state honestly
 
-- Tasks were delivered and reworked through the client's PM process, and reworks were turned around the same day.
+- Tasks were delivered and reworked through the client's PM process; reworks were turned around the same day. Payment receipt is not claimed on this page.
 - The process artefacts (checklist, defect register, QA template, iteration ledger) exist and are versioned. Internal agreement on them **does not** prove future client acceptance, and we do not claim it does.
 
 ## Skills shown
