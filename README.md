@@ -19,6 +19,10 @@ This portfolio keeps growing. New tools are added as they are built and tested. 
 
 - [AI-assisted character image edits](case-studies/ai-character-image-edits.md): the Gemini image-editing pipeline with sampling, masked repairs, a two-gate QA process and a 14-class defect register built from real client feedback.
 
+## Profile kit
+
+[profile-kit/](profile-kit/): portfolio cards and profile text, generated from this repo's own test results.
+
 ## Run the tests
 
 ```sh
