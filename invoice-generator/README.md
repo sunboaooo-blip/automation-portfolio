@@ -19,17 +19,19 @@ Output: `invoice-<no>.pdf`, `receipt-<no>.pdf` and `summary.csv` (subtotal, tax 
 - **Money:** Python `Decimal` throughout. The unit price is rounded half-up to 2 decimals, each line amount is rounded, tax is rounded once on the subtotal, and total = subtotal + tax. Thousands separators such as `"4,500.00"` are accepted.
 - **Long invoices** paginate automatically (header and footer on every page, "page n/N"). The included 70-line test gives 3 pages, and its totals match an independent recomputation (56,894.25 + 10,240.97 = 67,135.22).
 - **Fonts** are Inter and Manrope (SIL OFL; licences in `assets/`). Unicode names such as "Café ünïcode" render.
-- **Google Sheets:** the sheet must be shared "anyone with the link can view". It is read through its CSV export URL, with no account or credentials.
+- **Google Sheets:** the sheet must be shared "anyone with the link can view". It is read through its CSV export URL, with no account or credentials. Note that link-view sharing makes the data readable by anyone who has the link.
+- **Safety checks:** required columns are checked on the original input before anything is filled in (a missing column stops the run with exit 1); runs of more than 500 line items are refused; invoice numbers are turned into safe ASCII file names (`../../etc/x 7` → `invoice-etc_x_7.pdf`); long item, customer and business texts wrap instead of overflowing.
 
 ## Tested / not tested
 
-Tested here:
+Tested here (`tests/RUNLOG-edge-cases.txt`):
 - CSV and JSON give identical totals;
 - the 70-line pagination and totals;
-- rendered output checked visually.
+- rendered output checked visually (`example-output/invoice-long-text-wrap.png`);
+- missing column → exit 1; 501 lines → exit 1; unsafe invoice number → safe file name;
+- **live Google Sheet fetch:** Google's public Sheets API sample sheet was fetched through the export URL (30 rows). Its columns are not invoice columns, so the header check correctly stopped the run. That proves the fetch path, not invoice output from a real invoice sheet.
 
 Not tested:
-- a live Google Sheet; the export-URL code path has not been run against a real sheet;
 - private sheets that need OAuth or a service account;
 - multiple tax rates per invoice, discounts, credit notes;
 - right-to-left scripts.

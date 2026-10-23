@@ -1,0 +1,16 @@
+== missing header
+input is missing columns: ['unit_price']
+exit=1
+== 501 lines
+501 line items exceed the agreed limit of 500 per run
+exit=1
+== unsafe invoice no + long text
+1 invoice(s) + receipt(s) written to <tmp>/o3
+exit=0
+invoice-etc_x_7.pdf
+receipt-etc_x_7.pdf
+summary.csv
+== live public Google Sheet (Google's own Sheets API sample, wrong columns on purpose)
+input is missing columns: ['invoice_no', 'date', 'customer', 'item', 'qty', 'unit_price']
+exit=1
+fetched rows 30 columns ['Student Name', 'Gender', 'Class Level', 'Home State']
