@@ -1,0 +1,5 @@
+{"business_name": "Solvane Studio (fictional)", "business_address": ["12 Example Road", "Sample City 100-0001"],
+ "logo": "../assets/logo.png", "font_regular": "../assets/Inter-Regular.ttf", "font_bold": "../assets/Manrope-Bold.ttf",
+ "color_primary": "#14A38B", "currency": "INR", "tax_label": "GST", "tax_rate": "0.18",
+ "footer": "Thank you for your business", "page": "A4",
+ "receipt_note": "Receipt template generated from the same data as the invoice. Payment status must be confirmed by the business; this document does not by itself prove that payment was received."}

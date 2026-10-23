@@ -1,0 +1,4 @@
+invoice_no,date,customer,item,qty,unit_price
+INV-001,2026-10-23,Acme Traders,Logo design,1,"4,500.00"
+INV-001,2026-10-23,Acme Traders,Business cards (box of 100),3,349.995
+INV-002,2026-10-23,Bright Foods,Menu layout,2,1250
