@@ -1,43 +1,16 @@
-== remote endpoint guard
-refusing a non-local model endpoint (invoices must stay on this machine); use --allow-remote to override
-exit=1
+== tamper tests (model answer altered after the call)
+dropped last line: ['coverage: 3 printed rows look like qty x rate = amount, 2 lines extracted', 'sum of line amounts differs from printed subtotal']
+duplicated a line: ['line 4: qty/rate/amount not found together on one unused printed row', 'coverage: 3 printed rows look like qty x rate = amount, 4 lines extracted', 'sum of line amounts differs from printed subtotal']
+invented description: ['line 1 description not found verbatim in PDF text']
+wrong supplier: ["supplier 'Some Other Traders' missing or not found verbatim in PDF text"]
 == negative fixtures
-VH-101.pdf VH-101 1 lines total 472.00
-VH-102.pdf VH-102 1 lines total None
-VH-103.pdf VH-103 1 lines total 718.00
-VH-104-hybrid.pdf VH-104 1 lines total 1062.0
 4 invoices, 4 line items, 5 exceptions -> out-neg.xlsx
-('file', 'invoice_no', 'issue', 'recomputed', 'printed')
-('VH-101.pdf', 'VH-101', 'line 1 qty missing or unparsable (None)', None, None)
-('VH-102.pdf', 'VH-102', 'line 1 qty missing or unparsable (None)', None, None)
-('VH-102.pdf', 'VH-102', 'total missing or unparsable (None) - totals NOT verified', None, None)
-('VH-103.pdf', 'VH-103', 'line 1 qty missing or unparsable (None)', None, None)
-('VH-104-hybrid.pdf', None, 'page(s) [2] have no text layer (scanned?) - their content is NOT extracted', None, None)
-description cell: '=HYPERLINK("x") cable ties' type s
-== regression on the 6 original invoices
-6 invoices, 80 line items, 1 exceptions -> out.xlsx
-('file', 'invoice_no', 'issue', 'recomputed', 'printed')
-('SE-0042.pdf', 'SE-0042', 'subtotal - discount + taxes differs from printed total', '4312.90', '4900.0')
-== negative fixtures (rate from label)
-4 invoices, 4 line items, 4 exceptions -> out-neg.xlsx
-('file', 'invoice_no', 'issue', 'recomputed', 'printed')
-('VH-101.pdf', 'VH-101', 'line 1 qty missing or unparsable (None)', None, None)
-('VH-102.pdf', 'VH-102', 'total missing or unparsable (None) - totals NOT verified', None, None)
-('VH-103.pdf', 'VH-103', 'line 1 qty missing or unparsable (None)', None, None)
-('VH-104-hybrid.pdf', None, 'page(s) [2] have no text layer (scanned?) - their content is NOT extracted', None, None)
+VH-101.pdf | line 1 qty missing or unparsable (None)
+VH-102.pdf | total missing or unparsable (None) - totals NOT verified
+VH-103.pdf | line 1 qty missing or unparsable (None)
+VH-103.pdf | tax GST: taxable x 18% differs from printed amount
+VH-104-hybrid.pdf | page(s) [2] have no text layer (scanned?) - their content is NOT extracted
 == regression
 6 invoices, 80 line items, 1 exceptions -> out.xlsx
-('file', 'invoice_no', 'issue', 'recomputed', 'printed')
 ('SE-0042.pdf', 'SE-0042', 'subtotal - discount + taxes differs from printed total', '4312.90', '4900.0')
-== negative fixtures (rate '18%' parsed)
-4 invoices, 4 line items, 5 exceptions -> out-neg.xlsx
-('file', 'invoice_no', 'issue', 'recomputed', 'printed')
-('VH-101.pdf', 'VH-101', 'line 1 qty missing or unparsable (None)', None, None)
-('VH-102.pdf', 'VH-102', 'total missing or unparsable (None) - totals NOT verified', None, None)
-('VH-103.pdf', 'VH-103', 'line 1 qty missing or unparsable (None)', None, None)
-('VH-103.pdf', 'VH-103', 'tax GST: taxable x 18% differs from printed amount', '108.00', '118.00')
-('VH-104-hybrid.pdf', None, 'page(s) [2] have no text layer (scanned?) - their content is NOT extracted', None, None)
-== regression
-6 invoices, 80 line items, 1 exceptions -> out.xlsx
-('file', 'invoice_no', 'issue', 'recomputed', 'printed')
-('SE-0042.pdf', 'SE-0042', 'subtotal - discount + taxes differs from printed total', '4312.90', '4900.0')
+sheets: ['Invoices', 'Line items', 'Taxes', 'By supplier', 'Exceptions'] | tax rows: 9

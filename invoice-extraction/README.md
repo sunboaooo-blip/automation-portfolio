@@ -11,7 +11,8 @@ The workbook has four sheets:
 | sheet | contents |
 |---|---|
 | **Invoices** | one row per invoice: supplier, number, date, line count, subtotal, discount, taxes, total |
-| **Line items** | one row per line: description, qty, rate, amount |
+| **Line items** | one row per line: description, qty, rate, line discount, amount |
+| **Taxes** | one row per printed tax: label, rate %, amount (CGST and SGST kept separate) |
 | **By supplier** | invoice count and printed totals per supplier |
 | **Exceptions** | everything that does not add up or cannot be traced to the PDF |
 
@@ -22,7 +23,9 @@ The workbook has four sheets:
 3. **Nothing the model returns is trusted.** Each of these goes to **Exceptions**, with the recomputed and printed values side by side; printed values are kept and never "fixed":
    - a required value (total, subtotal, each line's qty/rate/amount) that is **missing or unparsable**;
    - a number that does not literally appear in that invoice's text;
-   - a line whose qty, rate and amount are **not printed together on one row** of the PDF (row attribution);
+   - a supplier name, invoice number, date or **line description** that does not appear verbatim in the text;
+   - a line whose qty, rate and amount are **not printed together on one row** of the PDF. Each printed row can back only **one** extracted line, so duplicates are caught;
+   - **coverage:** the number of printed rows where qty × rate = amount is compared with the number of extracted lines, so a dropped line is caught;
    - arithmetic that does not add up when recomputed with Decimal: qty × rate = amount, the sum of lines = subtotal, subtotal − discount + taxes = total, and **taxable × the printed tax rate = tax amount**.
 4. **Every page is checked for a text layer separately**, so one scanned page inside an otherwise digital PDF is reported, not silently skipped.
 5. The XLSX holds values only. Text that looks like a formula (`=…`, `+…`, `-…`, `@…`) is stored as literal text.
@@ -52,11 +55,18 @@ Four deliberately broken invoices:
 | `VH-103` | GST printed as 118.00 for 18% of 600.00 | recomputed 108.00 against printed 118.00 |
 | `VH-104-hybrid` | page 2 is a scanned image | "page(s) [2] have no text layer" |
 
+**Model-mistake simulation (`test_tamper.py`).** The real model answer for one invoice was altered after the call, and each mistake was caught:
+- a dropped line → coverage (3 printed vs 2 extracted), plus the subtotal mismatch;
+- a duplicated line → no unused printed row, plus coverage;
+- an invented description → "description not found verbatim";
+- a wrong supplier → "supplier not found verbatim".
+
 A non-local endpoint was refused with exit 1. The six regular invoices were re-run and gave the same result as before: 80 lines and one exception, the planted wrong total. Because these fixtures have no column headers, the model also left `qty` empty on two of them. Those were **flagged, not filled in**, which is the intended behaviour.
 
 ## Limits
 
-- Field-to-row attribution is checked per line item. Header fields such as invoice number and date are checked only for presence in the text.
+- Header fields (supplier, number, date) are checked for verbatim presence in the text, not for their position on the page.
+- The coverage count recognises item rows that print qty, rate and amount. Layouts that print only an amount per line need a buyer-specific rule, set up at job time.
 - Selectable-text PDFs only. Scanned invoices need a separate OCR or vision pass and are quoted after a sample.
 - Multi-currency conversion and tax-rule validation (for example, whether 18% is the right rate) are not attempted. The workbook reports what is printed.
 - The sample invoices are generated: three by [`invoice-generator`](../invoice-generator/) and three by `make_alt.py`, all with fictional suppliers.
