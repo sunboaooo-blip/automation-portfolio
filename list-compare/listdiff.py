@@ -100,11 +100,11 @@ def main():
         ws.append(head)
         for c in ws[1]:
             c.font = Font(bold=True)
-        for r in rows:
+        for n, r in enumerate(rows, 2):
             ws.append(r)
-            for c in ws[ws.max_row]:
-                if isinstance(c.value, str) and c.value[:1] in ("=", "+", "-", "@"):
-                    c.data_type = "s"  # literal text, never a formula
+            for j, v in enumerate(r, 1):  # O(1) per cell; ws.max_row would rescan the sheet every row
+                if isinstance(v, str) and v[:1] in ("=", "+", "-", "@"):
+                    ws.cell(row=n, column=j).data_type = "s"  # literal text, never a formula
         ws.freeze_panes = "A2"
     sheet(wb.active, ["source_row_in_A"] + lists["A"]["head"], out["A"]["missing"]); wb.active.title = "Missing from B"
     sheet(wb.create_sheet("Missing from A"), ["source_row_in_B"] + lists["B"]["head"], out["B"]["missing"])

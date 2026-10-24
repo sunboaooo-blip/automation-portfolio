@@ -33,3 +33,8 @@ formula cell type: ['s']
 == guards
 fixtures/list_a.csv: column 'Nope' not found; header is ['Full Name', 'Email', 'Phone']
 exit=2
+== benchmark 200,000 x 200,000 rows
+A: 200000 rows = 107675 matched + 92325 missing from B + 0 blank; 46757 repeated name(s)
+B: 200000 rows = 107489 matched + 92511 missing from A + 0 blank; 46715 repeated name(s)
+normalisation: space -> <tmp>/o.xlsx
+wall 6.31 s, peak RSS 410952 KB

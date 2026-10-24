@@ -182,11 +182,11 @@ def main():
     wb = Workbook()
     def sheet(ws, head, rows):
         ws.append(head); [c.__setattr__("font", Font(bold=True)) for c in ws[1]]
-        for r in rows:
+        for n, r in enumerate(rows, 2):
             ws.append([safe(v) for v in r])
-            for c in ws[ws.max_row]:
-                if isinstance(c.value, str) and c.value[:1] in ("=", "+", "-", "@"):
-                    c.data_type = "s"  # literal text, never a formula
+            for j, v in enumerate(r, 1):  # O(1) per cell; ws.max_row would rescan the sheet every row
+                if isinstance(v, str) and v[:1] in ("=", "+", "-", "@"):
+                    ws.cell(row=n, column=j).data_type = "s"  # literal text, never a formula
         ws.freeze_panes = "A2"
     sheet(wb.active, ["file", "supplier", "invoice_no", "date", "currency", "lines", "subtotal", "discount", "taxes", "total"], inv_rows)
     wb.active.title = "Invoices"
