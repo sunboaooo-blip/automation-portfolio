@@ -22,6 +22,8 @@ cd ../csv-dedup
 python3 -I csvdedup.py fixtures/sample.csv "$T/d.csv" "$T/d-log.csv" >/dev/null; check "csv-dedup full row" 0 $?
 [ "$(($(python3 -c "import sys;print(sum(1 for _ in open(sys.argv[1],newline='')))" "$T/d-log.csv") ))" -ge 4 ] && cmp -s "$T/d.csv" example-output/full.csv; check "csv-dedup output matches expected bytes" 0 $?
 python3 -I csvdedup.py fixtures/sample.csv fixtures/sample.csv "$T/x.csv" 2>/dev/null; check "csv-dedup refuses to overwrite input" 2 $?
+python3 -I csvdedup.py fixtures/literal_quote.csv "$T/q.csv" "$T/q-log.csv" >/dev/null && [ "$(wc -l < "$T/q.csv")" -eq 3 ]; check "csv-dedup literal quote in unquoted field: duplicate removed" 0 $?
+python3 -I fuzz_split.py 3 3000 >/dev/null; check "csv-dedup split agrees with csv parser (3,000 random texts)" 0 $?
 cd ../txt-to-xlsx
 for f in sample:0 order_matters:0 countercases:0 numeric_equal:0; do
   "$PY" -I txt2xlsx.py "fixtures/${f%%:*}.txt" "$T/o.xlsx" --placeholder N/A --normalize-ws --null-markers NULL >/dev/null; check "txt-to-xlsx ${f%%:*}" "${f##*:}" $?
