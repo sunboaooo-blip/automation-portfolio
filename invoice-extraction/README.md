@@ -19,10 +19,14 @@ The workbook has four sheets:
 
 1. **Text comes from the PDF's own text layer** (PyMuPDF). A page without a text layer, such as a scan, is reported rather than guessed.
 2. A **local language model on our own GPU** maps that text to fields. The invoices never leave the machine.
-3. **Nothing the model returns is trusted.** Every number is checked two ways:
-   - it must literally appear in that invoice's text;
-   - the arithmetic is recomputed with Decimal: qty × rate = amount, the sum of lines = subtotal, and subtotal − discount + taxes = total.
-   Any mismatch goes to **Exceptions**, with the recomputed and printed values side by side. Printed values are kept and never "fixed".
+3. **Nothing the model returns is trusted.** Each of these goes to **Exceptions**, with the recomputed and printed values side by side; printed values are kept and never "fixed":
+   - a required value (total, subtotal, each line's qty/rate/amount) that is **missing or unparsable**;
+   - a number that does not literally appear in that invoice's text;
+   - a line whose qty, rate and amount are **not printed together on one row** of the PDF (row attribution);
+   - arithmetic that does not add up when recomputed with Decimal: qty × rate = amount, the sum of lines = subtotal, subtotal − discount + taxes = total, and **taxable × the printed tax rate = tax amount**.
+4. **Every page is checked for a text layer separately**, so one scanned page inside an otherwise digital PDF is reported, not silently skipped.
+5. The XLSX holds values only. Text that looks like a formula (`=…`, `+…`, `-…`, `@…`) is stored as literal text.
+6. The model endpoint must be on this machine (`127.0.0.1` or `localhost`); anything else is refused unless `--allow-remote` is given.
 
 ## Result on the included samples
 
@@ -37,8 +41,22 @@ One invoice (`SE-0042`) was **planted with a wrong grand total**.
 - **Exactly one exception:** `SE-0042`, where the recomputed total is 4,312.90 against a printed 4,900.00.
 - About 3 minutes in total with a 12B local model, mostly the 70-line invoice.
 
+## Negative tests (`negative-tests/`, log in `RUNLOG.txt`)
+
+Four deliberately broken invoices:
+
+| fixture | planted problem | result |
+|---|---|---|
+| `VH-101` | item text `=HYPERLINK(...)` | stored as literal text (cell type `s`), not a formula |
+| `VH-102` | no grand total printed | "total missing – totals NOT verified" |
+| `VH-103` | GST printed as 118.00 for 18% of 600.00 | recomputed 108.00 against printed 118.00 |
+| `VH-104-hybrid` | page 2 is a scanned image | "page(s) [2] have no text layer" |
+
+A non-local endpoint was refused with exit 1. The six regular invoices were re-run and gave the same result as before: 80 lines and one exception, the planted wrong total. Because these fixtures have no column headers, the model also left `qty` empty on two of them. Those were **flagged, not filled in**, which is the intended behaviour.
+
 ## Limits
 
+- Field-to-row attribution is checked per line item. Header fields such as invoice number and date are checked only for presence in the text.
 - Selectable-text PDFs only. Scanned invoices need a separate OCR or vision pass and are quoted after a sample.
 - Multi-currency conversion and tax-rule validation (for example, whether 18% is the right rate) are not attempted. The workbook reports what is printed.
 - The sample invoices are generated: three by [`invoice-generator`](../invoice-generator/) and three by `make_alt.py`, all with fictional suppliers.
