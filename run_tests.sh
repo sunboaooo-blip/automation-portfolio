@@ -18,6 +18,10 @@ for f in clean:0 good_and_bad:1 latin1_ctrl:1 wrong_header:1; do
   python3 -I csvvalidate.py fixtures/rules.json "fixtures/${f%%:*}.csv" --report "$T/r.csv" >/dev/null; check "csv-validate ${f%%:*}" "${f##*:}" $?
 done
 cp fixtures/clean.csv "$T/in.csv"; python3 -I csvvalidate.py fixtures/rules.json "$T/in.csv" --report "$T/in.csv" 2>/dev/null; check "csv-validate refuses to overwrite input" 2 $?
+cd ../csv-dedup
+python3 -I csvdedup.py fixtures/sample.csv "$T/d.csv" "$T/d-log.csv" >/dev/null; check "csv-dedup full row" 0 $?
+[ "$(($(python3 -c "import sys;print(sum(1 for _ in open(sys.argv[1],newline='')))" "$T/d-log.csv") ))" -ge 4 ] && cmp -s "$T/d.csv" example-output/full.csv; check "csv-dedup output matches expected bytes" 0 $?
+python3 -I csvdedup.py fixtures/sample.csv fixtures/sample.csv "$T/x.csv" 2>/dev/null; check "csv-dedup refuses to overwrite input" 2 $?
 cd ../txt-to-xlsx
 for f in sample:0 order_matters:0 countercases:0 numeric_equal:0; do
   "$PY" -I txt2xlsx.py "fixtures/${f%%:*}.txt" "$T/o.xlsx" --placeholder N/A --normalize-ws --null-markers NULL >/dev/null; check "txt-to-xlsx ${f%%:*}" "${f##*:}" $?

@@ -9,6 +9,7 @@ This portfolio keeps growing. New tools are added as they are built and tested. 
 | Tool | What it does | Runs on |
 |---|---|---|
 | [csv-validate](csv-validate/) | Checks CSV files against editable rules and reports every issue with file / record / line / field. CI-friendly exit codes. | Python 3.8+, standard library only (tested on Ubuntu 22.04's Python 3.10.12) |
+| [csv-dedup](csv-dedup/) | CSV → CSV duplicate removal that keeps every other record byte-for-byte (quoting, CRLF, BOM, embedded line breaks), with a traceable removal log and a built-in self-check. | Python stdlib |
 | [txt-to-xlsx](txt-to-xlsx/) | Text data file → clean XLSX: whole-row dedup, every blank filled with one placeholder, no empty cells, a step log. | Python + openpyxl |
 | [pdf-sheet-picker](pdf-sheet-picker/) | Selects drawing sheets by discipline (e.g. electrical E/T) from a construction set by reading the title block, rotated pages included. | Python + PyMuPDF (pypdf fallback) |
 | [pdf-image-extractor](pdf-image-extractor/) | Extracts every embedded image at native resolution, de-duplicates by pixels, and writes a CSV manifest with page / row / position. | Python + PyMuPDF |
