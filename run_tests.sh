@@ -24,6 +24,9 @@ python3 -I csvdedup.py fixtures/sample.csv "$T/d.csv" "$T/d-log.csv" >/dev/null;
 python3 -I csvdedup.py fixtures/sample.csv fixtures/sample.csv "$T/x.csv" 2>/dev/null; check "csv-dedup refuses to overwrite input" 2 $?
 python3 -I csvdedup.py fixtures/literal_quote.csv "$T/q.csv" "$T/q-log.csv" >/dev/null && [ "$(wc -l < "$T/q.csv")" -eq 3 ]; check "csv-dedup literal quote in unquoted field: duplicate removed" 0 $?
 python3 -I fuzz_split.py 3 3000 >/dev/null; check "csv-dedup split agrees with csv parser (3,000 random texts)" 0 $?
+cd ../list-compare
+"$PY" -I listdiff.py fixtures/list_a.csv fixtures/list_b.csv "$T/lc.xlsx" --col "Full Name" --col-b Name --norm nfkc | grep -q "A: 9 rows = 3 matched + 5 missing from B + 1 blank"; check "list-compare nfkc counts" 0 $?
+"$PY" -I listdiff.py fixtures/list_a.csv fixtures/list_b.csv "$T/lc.xlsx" --col Nope 2>/dev/null; check "list-compare unknown column refused" 2 $?
 cd ../txt-to-xlsx
 for f in sample:0 order_matters:0 countercases:0 numeric_equal:0; do
   "$PY" -I txt2xlsx.py "fixtures/${f%%:*}.txt" "$T/o.xlsx" --placeholder N/A --normalize-ws --null-markers NULL >/dev/null; check "txt-to-xlsx ${f%%:*}" "${f##*:}" $?

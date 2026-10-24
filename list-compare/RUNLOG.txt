@@ -1,0 +1,35 @@
+== norm=exact
+A: 9 rows = 0 matched + 8 missing from B + 1 blank; 1 repeated name(s)
+B: 6 rows = 0 matched + 5 missing from A + 1 blank; 0 repeated name(s)
+normalisation: exact -> out/diff-exact.xlsx
+== norm=space
+A: 9 rows = 1 matched + 7 missing from B + 1 blank; 1 repeated name(s)
+B: 6 rows = 1 matched + 4 missing from A + 1 blank; 0 repeated name(s)
+normalisation: space -> out/diff-space.xlsx
+== norm=case
+A: 9 rows = 2 matched + 6 missing from B + 1 blank; 1 repeated name(s)
+B: 6 rows = 2 matched + 3 missing from A + 1 blank; 0 repeated name(s)
+normalisation: case -> out/diff-case.xlsx
+== norm=nfkc
+A: 9 rows = 3 matched + 5 missing from B + 1 blank; 1 repeated name(s)
+B: 6 rows = 3 matched + 2 missing from A + 1 blank; 0 repeated name(s)
+normalisation: nfkc -> out/diff-nfkc.xlsx
+== nfkc: Missing from B / Missing from A
+-- Missing from B
+(4, 'Chen Wei', 'chen@example.com', '0789')
+(5, 'José Álvarez', 'jose@example.com', None)
+(8, 'Chen Wei', 'chen2@example.com', '0790')
+(9, '=HYPERLINK("x")', 'f@example.com', None)
+(10, 'Farah Khan', 'farah@example.com', None)
+-- Missing from A
+(4, 'Jose Alvarez', None)
+(6, 'Gita Iyer', None)
+-- Blank names
+('A', 7, None, 'noname@example.com', None)
+('B', 7, None, None, None)
+-- Repeated names
+('A', 'chen wei', 2)
+formula cell type: ['s']
+== guards
+fixtures/list_a.csv: column 'Nope' not found; header is ['Full Name', 'Email', 'Phone']
+exit=2
