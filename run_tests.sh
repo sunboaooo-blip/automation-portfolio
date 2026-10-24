@@ -27,6 +27,9 @@ python3 -I fuzz_split.py 3 3000 >/dev/null; check "csv-dedup split agrees with c
 cd ../list-compare
 "$PY" -I listdiff.py fixtures/list_a.csv fixtures/list_b.csv "$T/lc.xlsx" --col "Full Name" --col-b Name --norm nfkc | grep -q "A: 9 rows = 3 matched + 5 missing from B + 1 blank"; check "list-compare nfkc counts" 0 $?
 "$PY" -I listdiff.py fixtures/list_a.csv fixtures/list_b.csv "$T/lc.xlsx" --col Nope 2>/dev/null; check "list-compare unknown column refused" 2 $?
+"$PY" -c "import csv,sys; a=next(csv.reader(open('fixtures/schema_a.csv'))); b=next(csv.reader(open('fixtures/schema_b.csv'))); sys.exit(0 if a!=b else 1)" && "$PY" -I listdiff.py fixtures/schema_a.csv fixtures/schema_b.csv "$T/ls.xlsx" --col "$("$PY" -c "import csv;print(next(csv.reader(open('fixtures/schema_a.csv')))[0])")" --col-b "$("$PY" -c "import csv;print(next(csv.reader(open('fixtures/schema_b.csv')))[0])")" >/dev/null && "$PY" -c "
+import csv,openpyxl,sys; wb=openpyxl.load_workbook(sys.argv[1]); hb=next(csv.reader(open('fixtures/schema_b.csv')))
+sys.exit(0 if [c.value for c in wb['Blank names B'][1]][2:]==hb else 1)" "$T/ls.xlsx"; check "list-compare blank names keep each list's own headers" 0 $?
 cd ../txt-to-xlsx
 for f in sample:0 order_matters:0 countercases:0 numeric_equal:0; do
   "$PY" -I txt2xlsx.py "fixtures/${f%%:*}.txt" "$T/o.xlsx" --placeholder N/A --normalize-ws --null-markers NULL >/dev/null; check "txt-to-xlsx ${f%%:*}" "${f##*:}" $?

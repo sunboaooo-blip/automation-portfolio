@@ -108,7 +108,9 @@ def main():
         ws.freeze_panes = "A2"
     sheet(wb.active, ["source_row_in_A"] + lists["A"]["head"], out["A"]["missing"]); wb.active.title = "Missing from B"
     sheet(wb.create_sheet("Missing from A"), ["source_row_in_B"] + lists["B"]["head"], out["B"]["missing"])
-    sheet(wb.create_sheet("Blank names"), ["list", "source_row"] + lists["A"]["head"], out["A"]["blank"] + out["B"]["blank"])
+    # Keep each source schema: concatenating B rows under A headers mislabels fields.
+    sheet(wb.create_sheet("Blank names A"), ["list", "source_row"] + lists["A"]["head"], out["A"]["blank"])
+    sheet(wb.create_sheet("Blank names B"), ["list", "source_row"] + lists["B"]["head"], out["B"]["blank"])
     sheet(wb.create_sheet("Repeated names"), ["list", "normalised_name", "rows_with_this_name"], out["A"]["reps"] + out["B"]["reps"])
     note = [
         ["List A", lists["A"]["path"], f"key column {lists['A']['col']!r}", f"{len(lists['A']['rows'])} rows"],

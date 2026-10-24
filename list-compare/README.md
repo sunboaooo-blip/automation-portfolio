@@ -10,7 +10,7 @@ python listdiff.py list_a.csv list_b.xlsx result.xlsx --col "Full Name" --col-b 
 |---|---|
 | **Missing from B** | every row of A whose name does not occur in B (all original columns, plus the source row number) |
 | **Missing from A** | the same in the other direction |
-| **Blank names** | rows with an empty name. They are never matched, and listed instead of dropped |
+| **Blank names A** / **Blank names B** | rows with an empty name, each under its **own list's headers**. They are never matched, and listed instead of dropped |
 | **Repeated names** | names that occur more than once in a list. They are **not merged**: every row is reported |
 | **Note** | inputs, key columns, row counts and the normalisation level used |
 
@@ -35,6 +35,8 @@ python listdiff.py list_a.csv list_b.xlsx result.xlsx --col "Full Name" --col-b 
 - An unknown column name exits 2 and prints the header.
 
 ## Tested (`RUNLOG.txt`, `fixtures/`)
+
+**Fix credited to an independent review:** the first version put blank-name rows from both lists under list A's headers, so a B phone number could appear under A's "Email" column when the lists had different columns. Blank names are now split per list (`fixtures/schema_a.csv` / `schema_b.csv` cover this). The core comparison was not affected.
 
 The fixture is a 9-row list A against a 6-row list B. They include spacing and case variants, a full-width name, an accented/unaccented pair, a blank name in each list, a repeated name and a formula-looking name. Each stricter level matches fewer names:
 
