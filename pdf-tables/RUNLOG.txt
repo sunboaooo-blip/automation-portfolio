@@ -1,0 +1,10 @@
+2026-10-28 pdftables.py proof (synthetic data only; no customer file)
+Set 1 (in/): A.pdf = p1 text-layer 9x5 table, p2 200 dpi noisy 0.4 deg-skewed scan 9x5, p3 text only; B.pdf = one scan, two tables (6x5, 5x5).
+  reader 1 Tesseract 5.5.0 per cell; reader 2 local Gemma 4 31B (vLLM, 127.0.0.1:8002), grid shape not given to it.
+  Result: 145/145 truth cells exact; 0 yellow; 0 exceptions; p3 sheet says "No table found"; 32 s for both PDFs incl. model.
+Set 2 (in_hard/): C.pdf = 110 dpi, heavy noise, blur, 0.9 deg skew (deliberately below eligibility).
+  Grid detector found 17x5, reader 2 independently read 11x5 -> "grid or read is wrong - whole table unconfirmed"
+  and "85 of 85 cells unconfirmed - scan below eligibility". Every written cell is yellow; nothing is presented as confirmed.
+Fixes made during the run: Otsu + median filter before ruling detection; reader 2 no longer told the grid shape;
+  >20% unconfirmed cells -> whole table flagged; a scanned page with no detected table is an Exception, not a silent "no table".
+Limits: ruled (gridlined) tables only on scans; merged cells on scans not reconstructed; unruled scanned tables not supported.
