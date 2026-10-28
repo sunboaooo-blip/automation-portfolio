@@ -35,6 +35,22 @@ from PIL import Image, ImageFilter
 YELLOW = PatternFill("solid", fgColor="FFFF00")
 
 
+def fit_columns(ws, max_width=60):
+    """Readable layout: each column as wide as its longest value (capped), long values wrap; values are unchanged."""
+    from openpyxl.styles import Alignment
+    from openpyxl.utils import get_column_letter
+    widths = {}
+    for row in ws.iter_rows():
+        for c in row:
+            if c.value is None or (isinstance(c.value, str) and c.value.startswith("Table ") and c.column == 1):
+                continue
+            widths[c.column] = max(widths.get(c.column, 0), len(str(c.value)))
+            if len(str(c.value)) > max_width:
+                c.alignment = Alignment(wrap_text=True, vertical="top")
+    for col, w in widths.items():
+        ws.column_dimensions[get_column_letter(col)].width = min(max(w + 2, 8), max_width)
+
+
 def deskew(g):
     """Angle (deg) that makes horizontal rulings sharpest, searched in +-1.5 deg."""
     small = Image.fromarray(g).resize((g.shape[1] // 3, g.shape[0] // 3))
@@ -194,6 +210,8 @@ def main():
         ws = wb.create_sheet("Exceptions")
         for row in [["page", "table", "row", "col", "issue", "reader 1 (written)", "reader 2"]] + exc:
             ws.append(row)
+        for ws in wb.worksheets:
+            fit_columns(ws)
         out = os.path.join(a.out, os.path.splitext(name)[0] + ".xlsx")
         wb.save(out)
         print(f"{name}: {len(doc)} pages -> {out}; {sum(s[3] for s in summary)} unconfirmed cells, {len(exc)} exceptions")
