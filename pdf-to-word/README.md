@@ -6,6 +6,7 @@ Selectable-text PDF → editable DOCX that keeps the **basic structure**: headin
 python make_fixtures.py fixtures
 python structdocx.py fixtures/structure.pdf out.docx
 python structdocx.py fixtures/table.pdf out.docx --drop-tables   # ruled tables removed with their text, each removal listed
+python structdocx.py a.pdf b.pdf c.pdf merged.docx               # several PDFs -> ONE DOCX in this order, each on a new page
 ```
 
 | Rule | Behaviour |
@@ -15,6 +16,7 @@ python structdocx.py fixtures/table.pdf out.docx --drop-tables   # ruled tables 
 | Paragraphs | Wrapped lines are joined. A wrapped list item continues only while indented; text back at the margin starts a new paragraph. |
 | Bold / italic | Taken from each text span's font flags. |
 | Ligatures | `ﬁ`, `ﬂ` and similar glyphs become plain letters, so Word search and spellcheck work. Nothing else is changed. |
+| Several PDFs | Merged into one DOCX in the order given, each starting on a new page (`--no-page-break` to run on). The word check runs **per PDF** on its own paragraphs, so a merge cannot hide a missing word. |
 | `--drop-tables` | Ruled tables found by PyMuPDF are removed **with** their text. Each one is listed (page, position, word count). |
 
 **Self-check.** The DOCX word sequence must equal an independent word list of the PDF (PyMuPDF's word API), minus list markers and minus words inside removed tables. Any mismatch deletes the output (exit 3). A page without a text layer is reported as *not in the DOCX* (exit 1), never silently skipped.

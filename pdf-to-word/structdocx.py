@@ -2,7 +2,9 @@
 """Selectable-text PDF -> editable DOCX that keeps BASIC structure: headings, paragraphs, bullet and numbered
 lists, bold and italic. Exact fonts, pagination and margins are deliberately not copied.
 
-usage: structdocx.py IN.pdf OUT.docx [--drop-tables]
+usage: structdocx.py IN.pdf [IN2.pdf ...] OUT.docx [--drop-tables] [--no-page-break]
+
+Several PDFs are merged into ONE DOCX in the order given (each starts on a new page); the word check runs per PDF.
 
 --drop-tables: ruled tables found by PyMuPDF find_tables() are removed WITH their text. Every removed table is
   listed (page, position, word count) so the buyer can see exactly what was stripped. Unruled "tables" (text
@@ -25,6 +27,7 @@ import sys
 from collections import Counter
 
 import docx
+from docx.enum.text import WD_BREAK
 import pymupdf
 
 BULLET = re.compile(r"^\s*([•●▪–\-\*·])\s+")
@@ -70,7 +73,8 @@ def spans_of(line):
     return out
 
 
-def main(src, dst, drop_tables=False):
+def convert_into(d, src, drop_tables=False):
+    """Append one PDF's structured text to Document d; return what the self-check needs."""
     pdf = pymupdf.open(src)
     lines, blank = [], []
     removed, ref_words = [], []
@@ -104,7 +108,7 @@ def main(src, dst, drop_tables=False):
             sizes[s] += len(t)
     body = sizes.most_common(1)[0][0]
     head_sizes = sorted({s for s in sizes if s > body + 0.5}, reverse=True)[:3]
-    d = docx.Document()
+    start = len(d.paragraphs)
     para, prev, prev_kind, list_x0 = None, None, None, 0
     lists, problems, label, num_id, expect = [], [], None, None, 1
     dropped = []
@@ -152,25 +156,50 @@ def main(src, dst, drop_tables=False):
         prev = ln
         if not cont:
             prev_kind = kind
+    return dict(pages=len(pdf), ref=ref_words, dropped=dropped, lists=lists, problems=problems, blank=blank,
+                removed=removed, body=body, heads=head_sizes, start=start, end=len(d.paragraphs))
+
+
+def main(srcs, dst, drop_tables=False, page_break=True):
+    """One or more PDFs -> ONE DOCX, in the given order; each PDF starts on a new page when page_break is set.
+    The word check runs per PDF on that PDF's own paragraphs, so a merge can never hide a missing or extra word."""
+    d = docx.Document()
+    parts = []
+    for i, src in enumerate(srcs):
+        if i and page_break:
+            d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+        parts.append((src, convert_into(d, src, drop_tables)))
     d.save(dst)
-    w_pdf = re.findall(r"\S+", " ".join(ref_words))
-    for m in dropped:
-        w_pdf.remove(m)
-    w_doc = re.findall(r"\S+", " ".join(p.text for p in docx.Document(dst).paragraphs))
-    if w_pdf != w_doc:
-        os.remove(dst)
-        i = next((k for k, (a, b) in enumerate(zip(w_pdf, w_doc)) if a != b), min(len(w_pdf), len(w_doc)))
-        sys.exit(f"SELF-CHECK FAILED: words differ at {i}: pdf {w_pdf[i:i + 5]} docx {w_doc[i:i + 5]}")
-    for pg, box, n in removed:
-        print(f"TABLE REMOVED: page {pg} at {box}, {n} words", file=sys.stderr)
-    if blank:
-        problems.append(f"page(s) {blank} have no text layer and are NOT in the DOCX")
-    for msg in problems:
-        print("CHECK:", msg, file=sys.stderr)
-    st = Counter(p.style.name for p in docx.Document(dst).paragraphs if p.text.strip())
-    print(f"{len(pdf)} pages, {len(w_doc)} words -> {dst}; body {body}pt, heading sizes {head_sizes}; styles {dict(st)}; numbered lists {[f"{l[0]}..{l[-1]}" for l in lists]}; self-check passed" + (f"; {len(problems)} item(s) to review" if problems else ""))
-    sys.exit(1 if problems else 0)
+    saved = docx.Document(dst).paragraphs
+    all_problems, total = [], 0
+    for src, r in parts:
+        w_pdf = re.findall(r"\S+", " ".join(r["ref"]))
+        for m in r["dropped"]:
+            w_pdf.remove(m)
+        w_doc = re.findall(r"\S+", " ".join(p.text for p in saved[r["start"]:r["end"]]))
+        if w_pdf != w_doc:
+            os.remove(dst)
+            k = next((k for k, (a, b) in enumerate(zip(w_pdf, w_doc)) if a != b), min(len(w_pdf), len(w_doc)))
+            sys.exit(f"SELF-CHECK FAILED in {os.path.basename(src)}: words differ at {k}: pdf {w_pdf[k:k + 5]} docx {w_doc[k:k + 5]}")
+        for pg, box, n in r["removed"]:
+            print(f"TABLE REMOVED: {os.path.basename(src)} page {pg} at {box}, {n} words", file=sys.stderr)
+        probs = list(r["problems"]) + ([f"page(s) {r['blank']} have no text layer and are NOT in the DOCX"] if r["blank"] else [])
+        for msg in probs:
+            print(f"CHECK: {os.path.basename(src)}: {msg}", file=sys.stderr)
+        all_problems += probs; total += len(w_doc)
+        print(f"{os.path.basename(src)}: {r['pages']} pages, {len(w_doc)} words, body {r['body']}pt, heading sizes {r['heads']}, "
+              f"numbered lists {[f'{l[0]}..{l[-1]}' for l in r['lists']]}; word check passed")
+    st = Counter(p.style.name for p in saved if p.text.strip())
+    print(f"{len(srcs)} PDF(s) -> {dst}: {total} words; styles {dict(st)}; self-check passed"
+          + (f"; {len(all_problems)} item(s) to review" if all_problems else ""))
+    sys.exit(1 if all_problems else 0)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2], "--drop-tables" in sys.argv[3:])
+    ap = __import__("argparse").ArgumentParser(description="PDF(s) -> one structured DOCX")
+    ap.add_argument("inputs", nargs="+", help="IN.pdf [IN2.pdf ...] OUT.docx (PDFs merged in this order)")
+    ap.add_argument("--drop-tables", action="store_true"); ap.add_argument("--no-page-break", action="store_true")
+    a = ap.parse_args()
+    if len(a.inputs) < 2 or not a.inputs[-1].lower().endswith(".docx"):
+        sys.exit("usage: structdocx.py IN.pdf [IN2.pdf ...] OUT.docx [--drop-tables] [--no-page-break]")
+    main(a.inputs[:-1], a.inputs[-1], a.drop_tables, not a.no_page_break)

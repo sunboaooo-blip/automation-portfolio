@@ -51,7 +51,7 @@ cd ../pdf-to-word
 import docx,sys,collections; c=collections.Counter(p.style.name for p in docx.Document(sys.argv[1]).paragraphs if p.text.strip())
 sys.exit(0 if c['Heading 1']==1 and c['Heading 2']==2 and c['List Bullet']==3 and c['List Number']==2 else 1)" "$T/s.docx"; check "pdf-to-word headings and lists mapped" 0 $?
 "$PY" -I structdocx.py "$T/w/restart.pdf" "$T/r.docx" 2>/dev/null | grep -q "1...2.', '1...2.', '5...6."; check "pdf-to-word numbered lists restart like the source" 0 $?
-"$PY" -I structdocx.py "$T/w/table.pdf" "$T/t.docx" --drop-tables 2>&1 | grep -q "TABLE REMOVED: page 1"; check "pdf-to-word ruled table removed and listed" 0 $?
+"$PY" -I structdocx.py "$T/w/table.pdf" "$T/t.docx" --drop-tables 2>&1 | grep -q "TABLE REMOVED: .*page 1"; check "pdf-to-word ruled table removed and listed" 0 $?
 "$PY" -c "import docx,sys; t=' '.join(p.text for p in docx.Document(sys.argv[1]).paragraphs); sys.exit(0 if 'Cleaning' not in t and 'Call us to book a visit.' in t else 1)" "$T/t.docx"; check "pdf-to-word table text gone, body kept" 0 $?
 cd ../pdf-to-a4
 "$PY" make_book.py "$T/book.pdf" && "$PY" -I scale_a4.py "$T/book.pdf" "$T/a4.pdf" >/dev/null; check "pdf-to-a4 159 pages self-check" 0 $?
