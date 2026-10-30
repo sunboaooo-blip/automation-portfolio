@@ -22,6 +22,7 @@ This portfolio keeps growing. New tools are added as they are built and tested. 
 | [invoice-generator](invoice-generator/) | CSV / JSON / shared Google Sheet → branded invoice + receipt PDFs from one config; Decimal money, paginated long invoices. | Python + fpdf2 |
 | [product-background-removal](product-background-removal/) | Batch cutouts at original resolution: transparent PNG, white JPEG, consistent-margin crop, 100% edge-check sheets; ~5 s per 2048×1536 image. | Python, local BiRefNet |
 | [product-price-cards](product-price-cards/) | Product photo + facts file → 5 colourful JPEG cards with name, specs, struck-through MRP, offer price and computed discount; product never redrawn, text never AI-drawn. | Python + Pillow, local BiRefNet |
+| [listings-analysis](listings-analysis/) | Several messy multi-sheet Excel workbooks → one cleaned dataset (headers, text, prices, dates normalised; exact duplicates removed; missing values counted, never filled) + charts + PDF summary; script and notebook. Synthetic data. | Python, pandas, matplotlib |
 | [transcription](transcription/) | Audio/video → TXT / SRT / VTT with local Whisper on GPU, plus a punctuation pass that is guaranteed not to change any word. | Python, CUDA GPU |
 
 ## Case studies (real client work, privacy stripped)
